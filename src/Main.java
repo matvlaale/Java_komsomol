@@ -6,68 +6,62 @@ public class Main {
     public static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        Road testRoad = new Road(100);
-        int numObjects = 10;
-        Object[] obstacles = new Object[numObjects];
-        for (int i = 0; i < numObjects; i++) {
-            int wor = rand.nextInt(2);
-            if (wor == 1) obstacles[i] = new Wall(rand.nextDouble() * 0.9);
-            else obstacles[i] = new Road(rand.nextDouble() * 220);
+        String[][] mas1 = {{"1", "1", "1", "1", "1"}, {"1", "1", "1", "1", "1"}, {"1", "1", "1", "1", "1"}, {"1", "1", "1", "1", "1"}};
+        try {
+            System.out.println(sum(mas1));
+        } catch (MyArrayDataException e) {
+            System.out.println("В массиве не числа! (В ячейке " + e.getX() + ", " + e.getY() + ")");
+            //e.printStackTrace();
+        } catch (MySizeArrayException e) {
+            System.out.println("Массив не соответствует размеру!");
+            //e.printStackTrace();
         }
-        Creature[] members = {new Man(), new Cat(), new Robot()};
-        boolean[] passed = new boolean[3];
-        for (int i = 0; i < 3; i++) {
-            passed[i] = true;
+        String[][] mas2 = {{"1", "1", "1", "1"}, {"1", "1", "1", "1"}, {"a", "b", "c", "d"}, {"1", "1", "1", "1"}};
+        try {
+            System.out.println(sum(mas2));
+        } catch (MyArrayDataException e) {
+            System.out.println("В массиве не числа! (В ячейке " + e.getX() + ", " + e.getY() + ")");
+            //e.printStackTrace();
+        } catch (MySizeArrayException e) {
+            System.out.println("Массив не соответствует размеру!");
+            //e.printStackTrace();
         }
-        int[] roundEnd = new int[3];
-        for (int i = 0; i < 3; i++) {
-            System.out.println("На полосе препятствий " + members[i].getName().toLowerCase());
-            for (int j = 0; j < numObjects; j++) {
-                if (passed[i]) {
-                    if (obstacles[j] instanceof Road) passed[i] = members[i].run((Road) obstacles[j]);
-                    else passed[i] = members[i].jump((Wall) obstacles[j]);
-                    if (!passed[i]) roundEnd[i] = j + 1;
-                }
-            }
-            System.out.println();
+        String[][] mas3 = {{"1", "1", "1", "1"}, {"0", "0", "9", "9"}, {"1", "2", "3", "4"}, {"5", "6", "7", "8"}};
+        try {
+            System.out.println(sum(mas3));
+        } catch (MyArrayDataException e) {
+            System.out.println("В массиве не числа! (В ячейке " + e.getX() + ", " + e.getY() + ")");
+            //e.printStackTrace();
+        } catch (MySizeArrayException e) {
+            System.out.println("Массив не соответствует размеру!");
+            //e.printStackTrace();
         }
-        for (int i = 0; i < 3; i++) {
-            if (passed[i]) System.out.println(members[i].getName() + " прошёл всю полосу препятствий!");
-            else System.out.println(members[i].getName() + " не смог пройти полосу на " + roundEnd[i] + " препятствии");
-        }
-        String sday = scanner.next();
-        DayOfWeek day = DayOfWeek.Monday;
-        switch (sday) {
-            case "Monday":
-                day = DayOfWeek.Monday;
-                break;
-            case "Tuesday":
-                day = DayOfWeek.Tuesday;
-                break;
-            case "Thursday":
-                day = DayOfWeek.Thursday;
-                break;
-            case "Wednesday":
-                day = DayOfWeek.Wednesday;
-                break;
-            case "Friday":
-                day = DayOfWeek.Friday;
-                break;
-            case "Saturday":
-                day = DayOfWeek.Saturday;
-                break;
-            case "Sunday":
-                day = DayOfWeek.Sunday;
-                break;
-        }
-        System.out.println("Кстати, на сербохорватском (или черногорскосербскобоснийскохорватском) \"" + day + "\" будет \"" + day.getName() + "\"");
-        System.out.println(dayOfWeek(day));
     }
 
-    public static String dayOfWeek(DayOfWeek day) {
-        if (day == DayOfWeek.Saturday || day == DayOfWeek.Sunday) return "Сегодня выходной";
-        else if(day != DayOfWeek.Thursday && day != DayOfWeek.Tuesday) return "Осталось работать " + (day.ordinal() * 8) + " часов";
-        else return "Осталось работать " + (day.ordinal() * 8) + " часа";
+    public static int sum(String[][] mas) throws MyArrayDataException, MySizeArrayException {
+        int sum = 0;
+        if (mas.length != 4 || mas[0].length != 4 || mas[1].length != 4 || mas[2].length != 4 || mas[3].length != 4)
+            throw new MySizeArrayException();
+        else {
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++)
+                    try {
+                        sum += reorganize(mas[i][j]);
+                    } catch (MyArrayDataException e) {
+                        throw new MyArrayDataException(i + 1, j + 1);
+                    }
+        }
+        return sum;
+    }
+
+    public static int reorganize(String str) throws MyArrayDataException {
+        int sum = 0;
+        for (int i = 0; i < str.length(); i++) {
+            int ch = str.charAt(i) - '0';
+            if (ch >= 0 && ch <= 9) sum += ch * Math.pow(10, i);
+            else throw new MyArrayDataException(0, 0);
+        }
+        return sum;
     }
 }
 
