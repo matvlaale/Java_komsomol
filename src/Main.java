@@ -1,67 +1,60 @@
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static Random rand = new Random();
     public static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        String[][] mas1 = {{"1", "1", "1", "1", "1"}, {"1", "1", "1", "1", "1"}, {"1", "1", "1", "1", "1"}, {"1", "1", "1", "1", "1"}};
-        try {
-            System.out.println(sum(mas1));
-        } catch (MyArrayDataException e) {
-            System.out.println("В массиве не числа! (В ячейке " + e.getX() + ", " + e.getY() + ")");
-            //e.printStackTrace();
-        } catch (MySizeArrayException e) {
-            System.out.println("Массив не соответствует размеру!");
-            //e.printStackTrace();
-        }
-        String[][] mas2 = {{"1", "1", "1", "1"}, {"1", "1", "1", "1"}, {"a", "b", "c", "d"}, {"1", "1", "1", "1"}};
-        try {
-            System.out.println(sum(mas2));
-        } catch (MyArrayDataException e) {
-            System.out.println("В массиве не числа! (В ячейке " + e.getX() + ", " + e.getY() + ")");
-            //e.printStackTrace();
-        } catch (MySizeArrayException e) {
-            System.out.println("Массив не соответствует размеру!");
-            //e.printStackTrace();
-        }
-        String[][] mas3 = {{"1", "1", "1", "1"}, {"0", "0", "9", "9"}, {"1", "2", "3", "4"}, {"5", "6", "7", "8"}};
-        try {
-            System.out.println(sum(mas3));
-        } catch (MyArrayDataException e) {
-            System.out.println("В массиве не числа! (В ячейке " + e.getX() + ", " + e.getY() + ")");
-            //e.printStackTrace();
-        } catch (MySizeArrayException e) {
-            System.out.println("Массив не соответствует размеру!");
-            //e.printStackTrace();
-        }
-    }
+        ArrayList<String> mem = new ArrayList<String>();
+        mem.add("Putin");
+        mem.add("Lennon");
+        mem.add("Trump");
+        mem.add("Obama");
+        mem.add("Putin");
+        mem.add("Lenin");
+        mem.add("Obama");
+        mem.add("Yeltsin");
+        mem.add("Merkel");
+        mem.add("Obama");
+        mem.add("Yeltsin");
+        mem.add("Merkel");
 
-    public static int sum(String[][] mas) throws MyArrayDataException, MySizeArrayException {
-        int sum = 0;
-        if (mas.length != 4 || mas[0].length != 4 || mas[1].length != 4 || mas[2].length != 4 || mas[3].length != 4)
-            throw new MySizeArrayException();
-        else {
-            for (int i = 0; i < 4; i++)
-                for (int j = 0; j < 4; j++)
-                    try {
-                        sum += reorganize(mas[i][j]);
-                    } catch (MyArrayDataException e) {
-                        throw new MyArrayDataException(i + 1, j + 1);
-                    }
+        HashMap<String, Integer> map = new HashMap<>();
+        for (String s : mem) {
+            if(map.putIfAbsent(s, 1) != null){
+                map.put(s, map.get(s) + 1);
+            }
         }
-        return sum;
-    }
+        System.out.println("Уникальные:");
+        for (String s: mem) {
+            if(map.get(s) == 1) System.out.print(s + " ");
+        }
+        System.out.println("\nСколько раз встречаются: ");
+        for (HashMap.Entry<String, Integer> s : map.entrySet()) {
+            System.out.println(s.getKey() + " " + s.getValue());
+        }
 
-    public static int reorganize(String str) throws MyArrayDataException {
-        int sum = 0;
-        for (int i = 0; i < str.length(); i++) {
-            int ch = str.charAt(i) - '0';
-            if (ch >= 0 && ch <= 9) sum += ch * Math.pow(10, i);
-            else throw new MyArrayDataException(0, 0);
-        }
-        return sum;
+        Book myBook = new Book();
+        myBook.add("Matveev", "+7(985)155-47-85");
+        myBook.add("Mikheev", "8(915)105-07-05");
+        myBook.add("Matveev", "+7(919)144-52-16");
+        myBook.add("Andreev", "8(916)641-40-41");
+        System.out.println("Andreev: " + myBook.get("Andreev"));
+        System.out.println("Mikheev: " + myBook.get("Mikheev"));
+        System.out.println("Matveev: " + myBook.get("Matveev"));
     }
 }
 
+class Book{
+    TreeMap<String, String> book = new TreeMap<>();
+
+    public void add(String surn, String number){
+        if(book.putIfAbsent(surn, number) != null){
+            book.put(surn, book.get(surn) + "\n" + number);
+        }
+    }
+
+    public String get(String surn){
+        return book.get(surn);
+    }
+}
